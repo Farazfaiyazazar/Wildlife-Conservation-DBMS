@@ -15,8 +15,7 @@ This system provides a centralized platform for researchers and conservationists
 ### 1. Prerequisites
 Ensure you have Python installed. Then, clone this repository:
 ```bash
-### 1. Prerequisites
 Before running the app, ensure you have the following installed:
-* **Python 3.9+**: [Download here](https://www.python.org/downloads/)
-* **Git**: To clone the repository and stay synced.
-* **VS Code**: Recommended editor (with the Python extension).
+ Python 3.9+: [Download here](https://www.python.org/downloads/)
+ Git: To clone the repository and stay synced.
+ VS Code: Recommended editor vs code.
