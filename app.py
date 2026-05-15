@@ -40,22 +40,20 @@ if not st.session_state.logged_in:
 
 # --- 4. MAIN APPLICATION (THE PROTECTED AREA) ---
 else:
-    # 🚨 EVERYTHING FROM HERE DOWN IS INDENTED (Pushed to the right) 🚨
     user_role = st.session_state.user_data.get('role_id')
     username = st.session_state.user_data.get('username')
 
-    # --- SIDEBAR LOGIC ---
+    # --- SIDEBAR LOGIC (Updated for 5 screens) ---
     with st.sidebar:
         st.image("https://ciu.edu.tr/themes/custom/ciu/logo.svg", width=160)
         st.markdown("## CIU DBMS PROJECT")
         
-        # Determine options based on role_id
         if user_role == 1: # Director
-            options = ["📊 Dashboard", "📝 Field Observations", "🌍 Habitat Registry"]
+            options = ["📊 Dashboard", "📝 Field Observations", "🌍 Habitat Registry", "🦁 Species Manager", "🛡️ Equipment Logs"]
         elif user_role == 2: # Analyst
-            options = ["📊 Dashboard", "🌍 Habitat Registry"]
+            options = ["📊 Dashboard", "📝 Field Observations", "🌍 Habitat Registry"]
         else: # Ranger (Role 3)
-            options = ["📝 Field Observations", "🌍 Habitat Registry"]
+            options = ["📝 Field Observations", "🌍 Habitat Registry", "🛡️ Equipment Logs"]
             
         page = st.radio("Navigation Menu", options)
         
@@ -65,7 +63,7 @@ else:
             st.session_state.logged_in = False
             st.rerun()
 
-    # --- PAGE ROUTING (Also inside the else block!) ---
+    # --- PAGE ROUTING ---
     if page == "📊 Dashboard":
         st.title("📊 Wildlife Analytics")
         species_data = db.table("species").select("*").execute().data
@@ -117,3 +115,45 @@ else:
         h_res = db.table("habitats").select("*").execute().data
         if h_res:
             st.dataframe(pd.DataFrame(h_res)[["area_name", "location_coords", "climate_type"]], use_container_width=True, hide_index=True)
+
+    elif page == "🦁 Species Manager":
+        st.title("🦁 Wildlife Species Manager")
+        
+        # INSERT SPECIES
+        with st.expander("➕ Add New Species"):
+            with st.form("add_species"):
+                c_name = st.text_input("Common Name")
+                s_name = st.text_input("Scientific Name")
+                pop = st.number_input("Initial Population", min_value=0)
+                status = st.selectbox("Status", ["Least Concern", "Vulnerable", "Endangered", "Critically Endangered"])
+                if st.form_submit_button("Add to Database"):
+                    db.table("species").insert({"common_name": c_name, "scientific_name": s_name, "population": pop, "conservation_status": status}).execute()
+                    st.success("Added!")
+                    st.rerun()
+
+        # DELETE SPECIES
+        st.subheader("Manage Species")
+        species_data = db.table("species").select("*").execute().data
+        if species_data:
+            df_s = pd.DataFrame(species_data)
+            st.dataframe(df_s, use_container_width=True)
+            sel_to_del = st.selectbox("Select Species to Delete", [s['common_name'] for s in species_data])
+            if st.button("🗑️ Delete"):
+                db.table("species").delete().eq("common_name", sel_to_del).execute()
+                st.warning("Deleted!")
+                st.rerun()
+
+    elif page == "🛡️ Equipment Logs":
+        st.title("🛡️ Equipment Tracker")
+        e_data = db.table("equipment").select("*").execute().data
+        if e_data:
+            st.dataframe(pd.DataFrame(e_data), use_container_width=True)
+            
+            # UPDATE EQUIPMENT
+            st.subheader("Update Gear Status")
+            e_id = st.number_input("Equipment ID", min_value=1)
+            new_stat = st.selectbox("Status", ["Operational", "Broken", "Maintenance"])
+            if st.button("Update Status"):
+                db.table("equipment").update({"status": new_stat}).eq("equip_id", e_id).execute()
+                st.success("Updated!")
+                st.rerun()
