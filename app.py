@@ -9,30 +9,11 @@ db = create_client(URL, KEY)
 
 st.set_page_config(page_title="Wildlife Registry Pro", page_icon="🌿", layout="wide")
 
-# This CSS creates the full background cover and a "Glass" effect for the login box
-st.markdown("""
-    <style>
-    .stApp {
-        background: url("https://images.unsplash.com/photo-1547468446-bc9cbb135675?q=80&w=2070&auto=format&fit=crop");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }
-
-    /* This targets the login container to make it pop */
-    [data-testid="stVerticalBlock"] > div:has(div.stButton) {
-        background-color: rgba(255, 255, 255, 0.85);
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-
-    /* Style the sidebar to stay white so it's readable */
-    [data-testid="stSidebar"] {
-        background-color: rgba(255, 255, 255, 1) !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+st.markdown("""<style>
+    .main { background-color: #f0f2f6; }
+    [data-testid="stMetric"] { background-color: #ffffff; border-radius: 10px; padding: 15px; border-bottom: 4px solid #2e7d32; }
+    section[data-testid="stSidebar"] { background-color: #ffffff !important; }
+    </style>""", unsafe_allow_html=True)
 
 # --- 2. SESSION STATE ---
 if 'logged_in' not in st.session_state:
