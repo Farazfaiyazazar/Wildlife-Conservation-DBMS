@@ -1,5 +1,5 @@
 # Wildlife Conservation DBMS
-> A professional, cloud-based database management system designed to monitor wildlife species, habitats, and conservation efforts. Built with **Python (Streamlit)** and **PostgreSQL (Supabase)**.
+> A cloud-based database management system designed to monitor wildlife species, habitats, and conservation efforts. Built with **Python (Streamlit)** and **PostgreSQL (Supabase)**.
 
 ---
 
